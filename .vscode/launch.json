@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Run JavaFX App",
+      "request": "launch",
+      "mainClass": "Main",
+      "cwd": "D:/InventoryManagementSystem",
+      "vmArgs": "--module-path \"C:/Users/Admin/Downloads/openjfx-17.0.16_windows-x64_bin-sdk/javafx-sdk-17.0.16/lib\" --add-modules javafx.controls,javafx.fxml",
+      "classPaths": [
+        "D:/InventoryManagementSystem/bin",
+        "D:/InventoryManagementSystem/lib/mysql-connector-j-9.4.0.jar"
+      ]
+    }
+  ]
+}
