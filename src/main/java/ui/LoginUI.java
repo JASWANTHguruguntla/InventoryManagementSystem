@@ -1,6 +1,6 @@
 package ui;
 
-import db.DBConnection;
+import db.DBUtil;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -8,7 +8,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import java.sql.*;
-import ui.InventoryUI;
 
 public class LoginUI extends Application {
 
@@ -28,7 +27,8 @@ public class LoginUI extends Application {
             if (validateLogin(user, pass)) {
                 messageLabel.setText("Login successful!");
                 stage.close();
-                new InventoryUI().start(new Stage());
+                InventoryUI inventoryUI = new InventoryUI();
+                inventoryUI.showInventory(new Stage());
             } else {
                 messageLabel.setText("Invalid credentials!");
             }
@@ -53,16 +53,29 @@ public class LoginUI extends Application {
     }
 
     private boolean validateLogin(String username, String password) {
-        try (Connection con = DBConnection.getConnection()) {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        
+        try {
+            con = DBUtil.getConnection();
             String query = "SELECT * FROM users WHERE username=? AND password=?";
-            PreparedStatement ps = con.prepareStatement(query);
+            ps = con.prepareStatement(query);
             ps.setString(1, username);
             ps.setString(2, password);
-            ResultSet rs = ps.executeQuery();
-            return rs.next(); // returns true if user found
+            rs = ps.executeQuery();
+            return rs.next();
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+                if (con != null) DBUtil.closeConnection(con);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
